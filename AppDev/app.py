@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
 #pass in sys.argv to allow command line arguments for application
 app = QApplication(sys.argv)
 
-#create a Qt widget, which will be our window
+#create a Qt widget, which will be our window (in Qt all top level widgets are windows)
 window = MainWindow()
 window.show()
 
