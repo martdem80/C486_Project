@@ -111,6 +111,7 @@ while True:
     # Show camera feed
     cv2.imshow('ASL Recognition', frame)
 
+    # Break the loop if the user presses the 'q' key
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
