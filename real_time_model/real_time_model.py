@@ -24,15 +24,30 @@ def load_model(model_path, num_classes=24):
 
 # Preprocess hand ROI 
 def preprocess_hand(roi):
+    # Convert to grayscale first
+    roi_gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+    
+    # Resize to match training data
+    roi_resized = cv2.resize(roi_gray, (28, 28))
+    
+    # Normalize to [0,1]
+    roi_normalized = roi_resized.astype(np.float32) / 255.0
+    
+    # Create 3 identical channels
+    roi_3channel = np.stack([roi_normalized] * 3, axis=0)
+    
+    # Convert to tensor
+    roi_tensor = torch.FloatTensor(roi_3channel)
+    
+    # Apply remaining transformations
     transform = transforms.Compose([
         transforms.Resize((224, 224)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                             std=[0.229, 0.224, 0.225])
+        transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225]
+        )
     ])
-    roi_rgb = cv2.cvtColor(roi, cv2.COLOR_BGR2RGB)
-    roi_pil = transforms.ToPILImage()(roi_rgb)
-    roi_tensor = transform(roi_pil).unsqueeze(0)
+    roi_tensor = transform(roi_tensor.unsqueeze(0))
     return roi_tensor
 
 
