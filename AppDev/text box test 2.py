@@ -1,41 +1,41 @@
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLineEdit, QPushButton, QFileDialog
-from PyQt6.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLineEdit, QPushButton, QFileDialog
+from PyQt5.QtCore import Qt
 import sys
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-        #main window
+        # Main window
         self.setWindowTitle("Center Text Box Example")
         self.setGeometry(100, 100, 600, 400)
 
         layout = QVBoxLayout()
 
-        #text box
+        # Text box
         self.textbox = QLineEdit(self)
-        self.textbox.setAlignment(Qt.AlignmentFlag.AlignCenter) 
+        self.textbox.setAlignment(Qt.AlignCenter) 
 
         layout.addWidget(self.textbox)
 
-        #save button
+        # Save button
         save_button = QPushButton("Save Text")
         save_button.clicked.connect(self.save_text)
 
         layout.addWidget(save_button)
 
-        #layout for the main window
+      
         self.setLayout(layout)
 
     def save_text(self):
-        #get the text from the text box
+     
         text = self.textbox.text()
         
-        #open a file dialog to choose the save location
+        # Open a file dialog to choose the save location
         file_name, _ = QFileDialog.getSaveFileName(self, "Save Text", "", "Text Files (*.txt);;All Files (*)")
         
         if file_name:
-            #save the text to a file
+            # Save the text to a file
             with open(file_name, "w") as file:
                 file.write(text)
 
@@ -45,4 +45,4 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
 
-    sys.exit(app.exec())
+    sys.exit(app.exec_())
