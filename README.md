@@ -65,7 +65,7 @@ Dataset/
         └── ...
 ```
 
-Note: Each image should have a corresponding label file in YOLO format!!!
+**Note: Each image should have a corresponding label file in YOLO format!!!**
 
 ## 🚀 Model Training
 
