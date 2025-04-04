@@ -99,7 +99,7 @@ The implementation:
 
 ## 📱 Mobile Application
 
-*This section will be updated once the mobile application development is complete.*
+*This section will be updated once the application development is complete.*
 
 ## 🔍 Code Structure
 
