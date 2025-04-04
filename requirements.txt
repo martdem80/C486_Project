@@ -20,7 +20,3 @@ tensorboard>=2.4.0
 
 # Optional: CUDA support (comment out if not using CUDA)
 # cupy-cuda11x  # replace with the version matching your CUDA installation
-
-# Optional: for notebook functionality
-# jupyter>=1.0.0
-# ipywidgets>=7.6.0
