@@ -121,7 +121,7 @@ Common issues:
 
 ## 📄 License
 
-[Specify your license here]
+-  
 
 ## 👏 Acknowledgments
 
