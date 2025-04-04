@@ -1,4 +1,4 @@
-# Real-time ASL Recognition with fine-tuned YOLOv8 Model
+# Real-time ASL Recognition with fine-tuned YOLOv8
 
 This repository contains code for model training, implementation and App development of a real-time American Sign Language (ASL) recognition system using fine-tuned YOLOv8 classification model.
 
