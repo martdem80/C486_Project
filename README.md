@@ -5,7 +5,7 @@ This repository contains code for model training, implementation and App develop
 ## 📋 Overview
 
 This project uses fine-tuned YOLOv8 model, a state-of-the-art object detection and segmentation model, to recognize ASL hand gestures in real-time through a webcam feed. 
-The system is trained to detect and classify the 24 letters of the English alphabet in ASL. (Except "J" and "Z" gestures due to the motions)
+The system is trained to detect and classify the 24 letters of the English alphabet in ASL (except "J" and "Z" gestures due to the motions). 
 
 ## 🔧 Prerequisites
 
