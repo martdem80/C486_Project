@@ -1,0 +1,26 @@
+# Core dependencies
+torch>=1.7.0
+torchvision>=0.8.1
+ultralytics>=8.0.0
+opencv-python>=4.5.0
+numpy>=1.19.0
+
+# For image processing and visualization
+matplotlib>=3.3.0
+pillow>=8.0.0
+scikit-image>=0.17.2
+
+# For data handling
+pyyaml>=5.4.0
+pandas>=1.1.0
+
+# For training utilities
+tqdm>=4.41.0
+tensorboard>=2.4.0
+
+# Optional: CUDA support (comment out if not using CUDA)
+# cupy-cuda11x  # replace with the version matching your CUDA installation
+
+# Optional: for notebook functionality
+# jupyter>=1.0.0
+# ipywidgets>=7.6.0
