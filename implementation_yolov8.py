@@ -7,7 +7,7 @@ import time
 
 def main():
     # Load YOLOv8 model
-    model_path = r"C:\Users\tians\OneDrive\Desktop\yolov8\best.pt"
+    model_path = r"C:\Users\tians\OneDrive\Desktop\yolov8\best.pt" # Change to the correct path
     model = YOLO(model_path)
 
     # Open camera
