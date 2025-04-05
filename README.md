@@ -107,7 +107,7 @@ The implementation:
 .
 ├── model_training_yolov8.py     # Script for training the YOLOv8 model
 ├── implementation_yolov8.py     # Script for real-time webcam implementation
-├── app.py                       # Application
+├── app.py                       # Script for Application
 ├── requirements.txt             # Required dependencies
 └── README.md                    # This file
 ```
