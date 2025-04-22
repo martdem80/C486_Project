@@ -69,10 +69,10 @@ Dataset/
 
 ## 🚀 Model Training
 
-The `model_training_yolov8.py` script handles the training process:
+The `model_training.py` script handles the training process:
 
 ```bash
-python model_training_yolov8.py
+python model_training.py
 ```
 
 The training process includes:
@@ -84,10 +84,10 @@ The training process includes:
 
 ## 📷 Real-time Implementation
 
-The `implementation_yolov8.py` script provides real-time ASL recognition using a webcam:
+The `implementation.py` script provides real-time ASL recognition using a webcam:
 
 ```bash
-python implementation_yolov8.py
+python implementation.py
 ```
 
 The implementation:
@@ -105,8 +105,8 @@ The implementation:
 
 ```
 .
-├── model_training_yolov8.py     # Script for training the YOLOv8 model
-├── implementation_yolov8.py     # Script for real-time webcam implementation
+├── model_training.py     # Script for training the YOLOv8 model
+├── implementation.py     # Script for real-time webcam implementation
 ├── app.py                       # Script for Application
 ├── requirements.txt             # Required dependencies
 └── README.md                    # This file
