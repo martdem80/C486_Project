@@ -20,3 +20,7 @@ tensorboard>=2.4.0
 
 # Optional: CUDA support (comment out if not using CUDA)
 # cupy-cuda11x  # replace with the version matching your CUDA installation
+
+# Mediapipe
+mediapipe>=0.10.21
+
