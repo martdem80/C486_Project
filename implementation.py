@@ -19,17 +19,18 @@ Process: MediaPipe-Based Verification for YOLO Detection Filtering
 #Global variables
 model_path = r".\best.pt"
 model = YOLO(model_path)
-cap = cv2.VideoCapture(0)
+cam = 0 #default camera for user
+cap = cv2.VideoCapture(cam)
 
 #Checks if camera opened successfully
 if not cap.isOpened():
-    print("Unable to open camera")
-    exit()
+   messagebox.showerror("Error", "camera cannot be found. Connect a camera device and press the flip camera button.")
+
 
 last_detected_letter = None #Tracks the last detected letter and saved file path
 last_saved_file = None  #Tracks the last saved file
 
-# Initialize MediaPipe 
+# Initializes MediaPipe 
 mp_hands = mp.solutions.hands
 hands_detector = mp_hands.Hands(static_image_mode = False,
                                 max_num_hands = 1,  # Only detect 1 hand to reduce False Positive
@@ -52,8 +53,8 @@ def get_hand_landmarks(frame):
             hands_landmarks.append(landmarks)
     return hands_landmarks
 
-# Checks if at least 30% of landmarks are within the bounding box.
-def is_hand_in_box(landmarks, box_coords, threshold = 0.3):
+#Checks if at least 50% of landmarks are within the bounding box.
+def is_hand_in_box(landmarks, box_coords, threshold = 0.5):
     x1, y1, x2, y2 = box_coords
     landmarks_in_box = sum(1 for (lm_x, lm_y) in landmarks 
                            if x1 <= lm_x <= x2 and y1 <= lm_y <= y2)
@@ -61,35 +62,34 @@ def is_hand_in_box(landmarks, box_coords, threshold = 0.3):
 
 def update_frame():
     global cap, model, last_detected_letter
-
     ret, frame = cap.read()
 
     if ret:
-        # Get hand landmarks from the frame
+        #Gets hand landmarks from the frame
         hand_landmarks_list = get_hand_landmarks(frame)     
 
-        # Use YOLOv8 model for prediction
+        #Uses YOLOv8 model for prediction
         results = model(frame, conf=0.44)
 
         if results[0].boxes is not None and len(results[0].boxes) > 0:
             for result in results[0]:
                 boxes = result.boxes
                 for box in boxes:
-                    #Get bounding box
+                    #Gets bounding box
                     x1, y1, x2, y2 = box.xyxy[0].cpu().numpy().astype(int)
 
-                    #Get confidence
+                    #Gets confidence
                     confidence = box.conf[0].cpu().numpy()
 
-                    #Get class
+                    #Gets class
                     class_id = int(box.cls[0].cpu().numpy())
                     class_name = model.names[class_id]
 
-                    # Verify that sufficient hand landmarks fall inside the YOLO box.
+                    #Verifies that sufficient hand landmarks fall inside the YOLO box.
                     hand_detected = any(is_hand_in_box(landmarks, (x1, y1, x2, y2))
                                         for landmarks in hand_landmarks_list)
                     if not hand_detected:
-                        continue  # Skip this detection if verification fails.
+                        continue  #Skips this detection if verification fails.
 
                     #Checks if the detected letter is different from the last one
                     if class_name != last_detected_letter:
@@ -179,18 +179,25 @@ def open_file():
 def delete():
     text_box.delete("1.0", tk.END)
 
+#Displays information about the app
 def about():
-    readme_path = "./README.txt"  #Path to the README file
-    if os.path.exists(readme_path):
-        try:
-            with open(readme_path, "r") as file:
-                content = file.read()
-            messagebox.showinfo("About", content)
-        except Exception as e:
-            print(f"Failed to read README.txt file: {e}")
-    else:
-        print("README.txt file not found.")
-        messagebox.showerror("Error", "README.txt file not found.")
+    markdown_window = tk.Toplevel(app)
+    markdown_window.title("Markdown Viewer")
+    markdown_window.geometry("600x400")
+
+    #Creates a Text widget to display the content
+    text_widget = tk.Text(markdown_window, wrap="word", font=("Arial", 12))
+    text_widget.pack(expand=True, fill="both")
+
+    try:
+        #Opens the markdown file and insert content
+        with open("README.md", "r", encoding="utf-8") as md_file:
+            content = md_file.read()
+            text_widget.insert("1.0", content)  # Insert content starting at line 1, column 0
+    except FileNotFoundError:
+        text_widget.insert("1.0", "Error: Markdown file not found.")
+    except Exception as e:
+        text_widget.insert("1.0", f"An error occurred: {e}")
 
 
 #Opens the LOGS folder in the file explorer
@@ -200,21 +207,21 @@ def open_folder():
         os.makedirs(logs_dir)
     os.startfile(logs_dir)  
 
+#Displays a visual aid for users
 def open_references():
-    # Path to the image file
-    image_path = "./ASL_map.png"  # Replace with your image file path
+    image_path = "./ASL_map.png"  
     if os.path.exists(image_path):
         try:
-            # Create a new window for displaying the image
+            #Creates a new window for displaying the image
             references_window = tk.Toplevel(app)
             references_window.title("References")
 
-            # Open and display the image using PIL
+            #Opens and display the image using PIL
             image = Image.open(image_path)
             image = image.resize((600, 400))  # Resize the image to fit the window
             img = ImageTk.PhotoImage(image)
 
-            # Add the image to the new window
+            #Adds the image to the new window
             image_label = tk.Label(references_window, image=img)
             image_label.image = img  # Keep a reference to avoid garbage collection
             image_label.pack()
@@ -225,12 +232,38 @@ def open_references():
         print("Image file not found.")
         messagebox.showerror("Error", "Image file not found.")
 
-# Initialize main application window
-app = tk.Tk()
-app.title("Gesture Recognition")
-app.geometry("800x600")
+#Allows a user to swap from default camera to another camera device. Limit is 2 cameras.
+def flip_camera():
+    global cap, cam
+    cap.release()
 
-# Create a drop-down menu
+    #Checks current camera source and toggle between 0 and 1
+    if cam == 0:
+        cam = 1
+        cap = cv2.VideoCapture(1)
+    else:
+        cam = 0
+        cap = cv2.VideoCapture(0)
+    
+    #Checks if the new camera opened successfully
+    if not cap.isOpened():
+       messagebox.showerror("Error", "camera not found")
+    
+#Initializes main application window
+app = tk.Tk()
+app.configure(bg = "#FFFFF0")
+user_screen_width = app.winfo_screenwidth()
+user_screen_height = app.winfo_screenheight()
+app.title("Gesture Recognition") 
+
+if user_screen_width < 800 or user_screen_height < 650:
+    app.geometry("{user_screen_width} x {user_screen_height}")
+else:
+    user_screen_width = 800
+    user_screen_height = 650
+    app.geometry("800x650")
+
+#Creates a drop-down menu
 menu_bar = Menu(app)
 file_menu = Menu(menu_bar, tearoff=0)
 file_menu.add_command(label="Save", command=save)
@@ -241,31 +274,37 @@ file_menu.add_command(label="About", command=about)
 file_menu.add_command(label="Open Folder", command=open_folder)
 menu_bar.add_cascade(label="Menu", menu=file_menu)
 
-# Configure the application to use the menu
+#Configures the application to use the menu
 app.config(menu=menu_bar)
 
-# Camera feed label
+#Adds 'flip camera' button to GUI
+flip_button = tk.Button(app, text="Flip Camera", command=flip_camera)
+flip_button.pack()
+
+#Camera feed label
 video_label = tk.Label(app)
 video_label.pack()
 
-# Text box for displaying detected letters
-text_box = Text(app, height=5, width=40)
+#Text box for displaying detected letters
+textbox_width = int(user_screen_width / 20)
+textbox_height = int(user_screen_height / 130)
+text_box = Text(app, height=textbox_height, width=textbox_width)
 text_box.pack()
 
-# Button to delete the last character
+#Button to delete the last character
 delete_button = tk.Button(app, text="Delete Last Character", command=delete_last_character)
 delete_button.pack()
 
-#add 'references' button to GUI
+#Add 'references' button to GUI
 references_button = tk.Button(app, text="References", command=open_references)
 references_button.pack()
 
-# Start the frame update
+#Starts the frame update
 update_frame()
 
-# Run the Tkinter application loop
+#Runs the Tkinter application loop
 app.mainloop()
 
-# Release resources after closing the GUI
+#Releases resources after closing the GUI
 cap.release()
 cv2.destroyAllWindows()
